@@ -36,10 +36,13 @@ int main() {
 
 
     vitesse = pot.read() * 720;     // valeur entre 0 et 720
+
     printf("%d\n\r",vitesse);
-   // vitesseAngleParSeconde();
-      
-    
+    //vitesseAngleParSeconde();
+    step = (vitesse * (STEPS_PER_REVOLUTION / 360))/2;  
+    printf("%d\n\r",step);
+    timeStep = 1 / step;
+    printf("%d\n\r",step);
 
 
   }
@@ -50,6 +53,7 @@ int main() {
 void fonctionStep (void)
 {
   stepPin = !stepPin;
+  //vitesseAngleParSeconde();
   t.attach(&fonctionStep, 0.0025);
 
 }
@@ -57,7 +61,8 @@ void fonctionStep (void)
 void vitesseAngleParSeconde (void)
 {
   step = (vitesse * (STEPS_PER_REVOLUTION / 360))/2;      
-  timeStep = 1 / step;          
+  timeStep = 1 / step;
+  //printf("%d\n\r",timeStep * 1000);          
 }
 
 
