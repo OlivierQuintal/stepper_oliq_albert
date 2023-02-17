@@ -4,53 +4,66 @@
 DigitalOut stepPin(p21);
 DigitalOut dirPin(p22);
 DigitalOut En(p23);
+
+#define STEPS_PER_REVOLUTION 200
+int vitesse = 0;
+
+
+AnalogIn  pot(p15);
 //const int stepsPerRevolution = 200;
 int i;
+float timeStep = 0.0025;
+float vitesseAngle;
+int step;
+
+
+void fonctionStep (void);
+void vitesseAngleParSeconde (void);
+
+Timeout t; 
+
+
+
 
 int main() {
   En = 1;
   dirPin = 1;
+  //t.attach(fonctionStep, 0.1);
+  t.attach(&fonctionStep, 0.0025);
   while (true) {
 
-    for (i = 1000; i > 200; i--) // augmenter graduellement la vitesse du moteur 
-    {
-        stepPin = 1;  
-        wait_us(i);
-        stepPin = 0;
-        wait_us(i);
-    }
+    
+
+
+    vitesse = pot.read() * 720;     // valeur entre 0 et 720
+    printf("%d\n\r",vitesse);
+   // vitesseAngleParSeconde();
       
-  for(i = 200; i>135; i--)  // augmenter la vitesse encore plus graduellement qu'au dému (1 step plus rapide a tous les 3 seconde )
-  {
-    for (int a = 0 ; a < 3000 ; a++)
-    {
-        stepPin = 1;  
-        wait_us(i);
-        stepPin = 0;
-        wait_us(i);
-    }
+    
 
-  }
-  for(i = 135; i>130; i--)  // augmenter la vitesse encore plus graduellement qu'au dému (1 step plus rapide a tous les 3 seconde )
-  {
-    for (int a = 0 ; a < 6000 ; a++)
-    {
-        stepPin = 1;  
-        wait_us(i);
-        stepPin = 0;
-        wait_us(i);
-    }
 
-  } 
-   
-     while(true)      // reste a vitesse constante
-    {
-       stepPin = 1;
-       wait_us(i);
-       stepPin = 0;
-
-       wait_us(i);
-     }
   }
 }
+
+
+
+void fonctionStep (void)
+{
+  stepPin = !stepPin;
+  t.attach(&fonctionStep, 0.0025);
+
+}
+
+void vitesseAngleParSeconde (void)
+{
+  step = (vitesse * (STEPS_PER_REVOLUTION / 360))/2;      
+  timeStep = 1 / step;          
+}
+
+
+// 360 deg pour 200 steps 
+// 1 deg pour 200/360 steps
+// 1 step pour 360/200 deg
+// 1 step pour 0.9 deg
+
 
